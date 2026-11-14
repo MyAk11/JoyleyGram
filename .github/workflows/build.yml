@@ -39,7 +39,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build JoyleyGram APK
-        run: ./gradlew assembleAfatDebug --stacktrace --no-daemon
+        run: ./gradlew :TMessagesProj_App:assembleAfatDebug :TMessagesProj_AppStandalone:assembleAfatDebug --stacktrace --no-daemon
 
       - name: Collect APKs
         if: always()
