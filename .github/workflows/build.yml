@@ -25,29 +25,30 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install NDK and CMake
+      - name: Install Android SDK, NDK and CMake
         run: |
-          yes | sdkmanager --licenses
+          yes | sdkmanager --licenses || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;27.2.12479018" "cmake;3.22.1"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build JoyleyGram APK
-        run: ./gradlew assembleAfatDebug --stacktrace
+        run: ./gradlew assembleAfatDebug --stacktrace --no-daemon
 
       - name: Collect APKs
+        if: always()
         run: |
           mkdir -p build_output
           find . -name "*.apk" -exec cp {} build_output/ \;
           ls -la build_output/
 
       - name: Upload JoyleyGram APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: JoyleyGram-APK
           path: build_output/*.apk
+          if-no-files-found: warn
